@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         .loading-spinner {
             display: none;
@@ -64,13 +64,33 @@
         }
         
         .payroll-preview {
-            font-family: 'Times New Roman', serif;
+            font-family: 'DejaVu Sans', 'Times New Roman', serif;
             font-size: 12px;
             line-height: 1.4;
             max-width: 210mm;
             margin: 0 auto;
             padding: 15mm;
             background: white;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 10px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            word-wrap: break-word;
+            text-align: left;
+        }
+        
+        th:nth-child(3), td:nth-child(3) {
+            text-align: right;
         }
         
         @media print {
@@ -111,7 +131,7 @@
     <!-- Header -->
     <div class="bg-white shadow-md p-6 mb-6">
         <div class="flex items-center justify-center max-w-4xl mx-auto">
-            <img id="logo" src="https://btbinh2710.github.io/vtpa-payroll/logo.jpg"> 
+            <img id="logo" src="https://btbinh2710.github.io/vtpa-payroll/logo.jpg" crossOrigin="anonymous" 
                  alt="VinFast Logo" class="h-16 w-auto mr-6" 
                  onload="console.log('✅ Logo loaded successfully')"
                  onerror="console.error('❌ Logo failed to load'); this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
@@ -630,7 +650,7 @@
                 <div class="payroll-preview">
                     <div style="text-align: center; margin-bottom: 15px;">
                         <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                          <img src="https://btbinh2710.github.io/vtpa-payroll/logo.jpg">
+                            <img src="https://btbinh2710.github.io/vtpa-payroll/logo.jpg" crossOrigin="anonymous" 
                                  style="height: 40px; margin-right: 15px;" 
                                  onerror="this.style.display='none'">
                             <div>
@@ -822,6 +842,9 @@
             }
         }
         
+        // Font DejaVu Sans base64 (placeholder, replace with actual base64)
+        const dejavuSans = 'data:application/x-font-ttf;base64,...'; // Thay bằng base64 của DejaVuSans.ttf
+        
         // Debug Export Function
         function debugExport(employeeData = null) {
             console.log('📄 Export clicked for:', employeeData?.fullName || 'manual input');
@@ -831,14 +854,12 @@
                 
                 const fileName = `BangLuong_${data.fullName.replace(/\s+/g, '')}_${new Date().getMonth() + 1}-${new Date().getFullYear()}.pdf`;
                 
-                // Create temporary div for PDF generation
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = generatePayrollHTML(data);
                 tempDiv.style.position = 'absolute';
                 tempDiv.style.left = '-9999px';
                 document.body.appendChild(tempDiv);
                 
-                // Generate PDF using html2canvas and jsPDF
                 html2canvas(tempDiv, {
                     scale: 2,
                     useCORS: true,
@@ -847,9 +868,14 @@
                     const { jsPDF } = window.jspdf;
                     const pdf = new jsPDF('p', 'mm', 'a4');
                     
+                    // Add DejaVu Sans font
+                    pdf.addFileToVFS('DejaVuSans.ttf', dejavuSans);
+                    pdf.addFont('DejaVuSans.ttf', 'DejaVuSans', 'normal');
+                    pdf.setFont('DejaVuSans');
+                    
                     const imgData = canvas.toDataURL('image/png');
-                    const imgWidth = 210; // A4 width in mm
-                    const pageHeight = 297; // A4 height in mm
+                    const imgWidth = 210;
+                    const pageHeight = 297;
                     const imgHeight = (canvas.height * imgWidth) / canvas.width;
                     
                     pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, Math.min(imgHeight, pageHeight));
