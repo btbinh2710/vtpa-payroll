@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(cors());
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
+  host: 'smtp.office365.com',
   port: 587,
   secure: false,
   auth: {
