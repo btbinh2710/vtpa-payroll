@@ -448,23 +448,31 @@ function debugExport(employeeData = null) {
 function debugEmail(employeeData) {
     console.log('📧 Email clicked for:', employeeData.fullName);
     try {
-        // Simulate email validation
-        const fromEmail = document.getElementById('fromEmail').value;
-        const password = document.getElementById('emailPassword').value;
-        
-        if (!fromEmail || !password) {
-            throw new Error('Vui lòng cấu hình email trước khi gửi');
-        }
-        
         if (!employeeData.email) {
             throw new Error('Nhân viên chưa có email');
         }
-        
-        // Simulate email sending
-        setTimeout(() => {
-            console.log('✅ Email sent successfully');
-            showSuccess(`Đã gửi email cho ${employeeData.fullName}`);
-        }, 1000);
+
+        // Gửi request tới backend
+        fetch('http://localhost:3001/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                to: employeeData.email,
+                subject: `Bảng lương tháng ${new Date().getMonth() + 1}/${new Date().getFullYear()} - ${employeeData.fullName}`,
+                html: generatePayrollHTML(employeeData)
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showSuccess(`Đã gửi email cho ${employeeData.fullName}`);
+            } else {
+                showError('Lỗi gửi email: ' + data.message);
+            }
+        })
+        .catch(err => {
+            showError('Lỗi gửi email: ' + err.message);
+        });
         
     } catch (error) {
         console.error('❌ Email error:', error);
@@ -539,21 +547,27 @@ function debugConnection() {
     setButtonLoading(button, true);
     
     try {
-        const server = document.getElementById('smtpServer').value;
-        const port = document.getElementById('smtpPort').value;
-        const email = document.getElementById('fromEmail').value;
-        const password = document.getElementById('emailPassword').value;
-        
-        if (!server || !port || !email || !password) {
-            throw new Error('Vui lòng điền đầy đủ thông tin SMTP');
-        }
-        
-        // Simulate connection test
-        setTimeout(() => {
+        // Test kết nối SMTP với backend
+        fetch('http://localhost:3001/test-connection', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
             setButtonLoading(button, false);
-            console.log('✅ SMTP connection successful');
-            showSuccess('Kết nối email thành công!');
-        }, 2000);
+            if (data.success) {
+                console.log('✅ SMTP connection successful');
+                showSuccess('Kết nối email thành công!');
+            } else {
+                console.error('❌ SMTP connection failed');
+                showError('Lỗi kết nối: ' + data.message);
+            }
+        })
+        .catch(err => {
+            setButtonLoading(button, false);
+            console.error('❌ Connection error:', err);
+            showError('Lỗi kết nối: ' + err.message);
+        });
         
     } catch (error) {
         setButtonLoading(button, false);
