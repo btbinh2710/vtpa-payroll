@@ -1,0 +1,14 @@
+{
+  "name": "vtpa-email-backend",
+  "version": "1.0.0",
+  "description": "Backend gửi email cho VTPA Payroll",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.8",
+    "cors": "^2.8.5"
+  }
+}
