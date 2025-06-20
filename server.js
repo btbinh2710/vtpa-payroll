@@ -6,37 +6,35 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// API gửi email
-app.post('/send-email', async (req, res) => {
-    const { smtpHost, smtpPort, smtpUser, smtpPass, to, subject, html } = req.body;
-
-    try {
-        // Tạo transporter
-        let transporter = nodemailer.createTransport({
-            host: smtpHost,
-            port: smtpPort,
-            secure: smtpPort == 465, // true for 465, false for other ports
-            auth: {
-                user: smtpUser,
-                pass: smtpPass
-            }
-        });
-
-        // Gửi email
-        let info = await transporter.sendMail({
-            from: smtpUser,
-            to,
-            subject,
-            html
-        });
-
-        res.json({ success: true, message: 'Đã gửi email thành công!', info });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Lỗi gửi email', error: error.message });
-    }
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'hanhchinh2@vinfastphantrongtue.com',
+    pass: '1234567Vf@',
+  },
 });
 
-const PORT = 3001;
+app.post('/send-email', (req, res) => {
+  const { to, subject, text } = req.body;
+
+  const mailOptions = {
+    from: 'hanhchinh2@vinfastphantrongtue.com',
+    to,
+    subject,
+    text,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return res.status(500).send(error.toString());
+    }
+    res.status(200).send('Email đã được gửi: ' + info.response);
+  });
+});
+
+const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Email backend running at http://localhost:${PORT}`);
-}); 
+  console.log(`Server đang chạy trên port ${PORT}`);
+});
