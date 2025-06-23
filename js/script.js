@@ -77,9 +77,11 @@ function getEmployeeData() {
         const percentage = parseInt(document.getElementById('salaryPercentage').value) || 100;
         const workDays = parseInt(document.getElementById('workDays').value) || 0;
         
+        // Lấy công chuẩn động từ input cài đặt
+        const standardWorkDays = parseInt(document.getElementById('standardWorkDays')?.value) || 24;
         // Calculate effective salary (applying percentage only to base salary)
         const effectiveSalary = baseSalary * (percentage / 100);
-        const actualSalary = Math.min(effectiveSalary * (workDays / 24), effectiveSalary);
+        const actualSalary = effectiveSalary * (workDays / standardWorkDays);
         
         const data = {
             fullName: document.getElementById('fullName').value || '',
@@ -521,10 +523,12 @@ function debugUpload(file) {
                     otherDeduction: parseInt(row['Khấu trừ khác']) || 0
                 }));
                 
+                // Lấy công chuẩn động từ input cài đặt
+                const standardWorkDays = parseInt(document.getElementById('standardWorkDays')?.value) || 24;
                 // Calculate for each employee
                 employeesData.forEach(emp => {
                     const effectiveSalary = emp.baseSalary * (emp.salaryPercentage / 100);
-                    emp.actualSalary = Math.min(effectiveSalary * (emp.workDays / 24), effectiveSalary);
+                    emp.actualSalary = effectiveSalary * (emp.workDays / standardWorkDays);
                     emp.totalIncome = emp.actualSalary + emp.overtime + emp.bonus + emp.mealAllowance + emp.responsibilityAllowance;
                     emp.totalDeduction = emp.socialInsurance + emp.mealDeduction + emp.regulationDeduction + emp.incomeTax + emp.otherDeduction;
                     emp.netSalary = emp.totalIncome - emp.totalDeduction;
