@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: vtpa-payroll-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_SECURE
+        value: false
+      - key: EMAIL_USER
+        value: hanhchinh2@vinfastphantrongtue.com
+      - key: EMAIL_PASS
+        sync: false
+    healthCheckPath: /health 

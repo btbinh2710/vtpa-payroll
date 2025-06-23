@@ -1,5 +1,11 @@
 console.log('🚀 VTPA Payroll System - Debug Mode Activated');
 
+// Backend URL configuration
+const BACKEND_URL = 'https://vtpa-payroll-backend.onrender.com'; // Online backend
+// const BACKEND_URL = 'http://localhost:3001'; // Local backend (uncomment for local testing)
+
+console.log('🔗 Backend URL:', BACKEND_URL);
+
 // Global variables
 let currentEmployeeData = null;
 let employeesData = [];
@@ -453,7 +459,7 @@ function debugEmail(employeeData) {
         }
 
         // Gửi request tới backend
-        fetch('http://localhost:3001/send-email', {
+        fetch(`${BACKEND_URL}/api/send-email`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -548,7 +554,7 @@ function debugConnection() {
     
     try {
         // Test kết nối SMTP với backend
-        fetch('http://localhost:3001/test-connection', {
+        fetch(`${BACKEND_URL}/api/test-connection`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         })
