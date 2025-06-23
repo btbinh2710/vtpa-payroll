@@ -75,7 +75,7 @@ function getEmployeeData() {
     try {
         const baseSalary = parseInt(document.getElementById('baseSalary').value) || 0;
         const percentage = parseInt(document.getElementById('salaryPercentage').value) || 100;
-        const workDays = parseInt(document.getElementById('workDays').value) || 0;
+        const workDays = parseFloat(document.getElementById('workDays').value) || 0;
         
         // Lấy công chuẩn động từ input cài đặt
         const standardWorkDays = parseInt(document.getElementById('standardWorkDays')?.value) || 24;
@@ -508,7 +508,7 @@ function debugUpload(file) {
                     department: row['Bộ phận'] || 'VF PTT HÀ NỘI',
                     position: row['Chức vụ'] || 'TVBH',
                     email: row['Email'] || '',
-                    workDays: parseInt(row['Ngày công thực tế']) || 25,
+                    workDays: parseFloat(row['Ngày công thực tế']) || 25,
                     baseSalary: parseInt(row['Mức lương']) || 0,
                     salaryPercentage: parseInt(row['Tỷ lệ hưởng']) || 100,
                     carsigned: parseInt(row['Số xe ký']) || 0,
