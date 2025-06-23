@@ -137,10 +137,12 @@ app.use('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 VTPA Payroll Backend running on port ${PORT}`);
     console.log(`📧 SMTP Host: ${process.env.SMTP_HOST || 'smtp.gmail.com'}`);
     console.log(`👤 Email User: ${process.env.EMAIL_USER || 'hanhchinh2@vinfastphantrongtue.com'}`);
     console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`🔗 Health check: http://localhost:${PORT}/health`);
 });
+
+// Force redeploy: update server.js for Render
