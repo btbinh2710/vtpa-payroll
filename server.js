@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname)));
 
 // Tạo transporter với biến môi trường
 const createTransporter = () => {
-    return nodemailer.createTransporter({
+    return nodemailer.createTransport({
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.SMTP_PORT) || 587,
         secure: process.env.SMTP_SECURE === 'true',
