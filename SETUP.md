@@ -20,7 +20,8 @@ EMAIL_USER=hanhchinh2@vinfastphantrongtue.com
 EMAIL_PASS=1234567Vf@
 
 # Server Configuration
-PORT=3001
+PORT=10000
+NODE_ENV=production
 ```
 
 ## Bước 4: Chạy backend
@@ -32,7 +33,7 @@ hoặc
 node server.js
 ```
 
-Backend sẽ chạy tại: `http://localhost:3001`
+Backend sẽ chạy tại: `http://localhost:10000`
 
 ## Bước 5: Mở frontend
 Mở file `index.html` trong trình duyệt web.
@@ -66,7 +67,7 @@ EMAIL_PASS=your-app-password
 
 1. **Lỗi "ECONNREFUSED":**
    - Đảm bảo backend đang chạy
-   - Kiểm tra port 3001 không bị chiếm
+   - Kiểm tra port 10000 không bị chiếm
 
 2. **Lỗi SMTP:**
    - Kiểm tra thông tin SMTP trong file .env

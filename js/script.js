@@ -1,7 +1,7 @@
 console.log('🚀 VTPA Payroll System - Debug Mode Activated');
 
 // Backend URL configuration
-const BACKEND_URL = 'https://vtpa-payroll-backend.onrender.com'; // Online backend
+const BACKEND_URL = 'https://vtpa-payroll.onrender.com'; // Online backend
 // const BACKEND_URL = 'http://localhost:3001'; // Local backend (uncomment for local testing)
 
 console.log('🔗 Backend URL:', BACKEND_URL);
