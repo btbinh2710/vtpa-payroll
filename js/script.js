@@ -81,7 +81,7 @@ function getEmployeeData() {
         const standardWorkDays = parseInt(document.getElementById('standardWorkDays')?.value) || 24;
         // Calculate effective salary (applying percentage only to base salary)
         const effectiveSalary = baseSalary * (percentage / 100);
-        const actualSalary = effectiveSalary * (workDays / standardWorkDays);
+        const actualSalary = Number((effectiveSalary * (workDays / standardWorkDays)).toFixed(2));
         
         const data = {
             fullName: document.getElementById('fullName').value || '',
@@ -110,9 +110,9 @@ function getEmployeeData() {
         };
         
         // Calculate totals
-        data.totalIncome = data.actualSalary + data.overtime + data.bonus + data.mealAllowance + data.responsibilityAllowance;
-        data.totalDeduction = data.socialInsurance + data.mealDeduction + data.regulationDeduction + data.incomeTax + data.otherDeduction;
-        data.netSalary = data.totalIncome - data.totalDeduction;
+        data.totalIncome = Number((data.actualSalary + data.overtime + data.bonus + data.mealAllowance + data.responsibilityAllowance).toFixed(2));
+        data.totalDeduction = Number((data.socialInsurance + data.mealDeduction + data.regulationDeduction + data.incomeTax + data.otherDeduction).toFixed(2));
+        data.netSalary = Number((data.totalIncome - data.totalDeduction).toFixed(2));
         
         console.log('📊 Employee data collected:', data);
         return data;
@@ -124,7 +124,7 @@ function getEmployeeData() {
 
 // Number formatting
 function formatNumber(num) {
-    return new Intl.NumberFormat('vi-VN').format(num);
+    return new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(Number(num.toFixed(2)));
 }
 
 function numberToWords(num) {
@@ -196,12 +196,23 @@ function calculateSalary() {
 }
 
 // Generate payroll HTML
+function getPayrollMonthYear() {
+    const monthInput = document.getElementById('payrollMonth');
+    if (monthInput && monthInput.value) {
+        const [year, month] = monthInput.value.split('-');
+        return { month, year };
+    }
+    // Nếu chưa chọn thì lấy tháng/năm hiện tại
+    const now = new Date();
+    return {
+        month: String(now.getMonth() + 1).padStart(2, '0'),
+        year: now.getFullYear().toString()
+    };
+}
+
 function generatePayrollHTML(data) {
     console.log('📄 Generating payroll HTML for:', data.fullName);
-    
-    const currentDate = new Date();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const year = currentDate.getFullYear();
+    const { month, year } = getPayrollMonthYear();
     
     return `
         <div class="payroll-preview">
@@ -409,7 +420,8 @@ function debugExport(employeeData = null) {
         const data = employeeData || getEmployeeData();
         if (!data) throw new Error('Không có dữ liệu nhân viên');
         
-        const fileName = `BangLuong_${data.fullName.replace(/\s+/g, '')}_${new Date().getMonth() + 1}-${new Date().getFullYear()}.pdf`;
+        const { month, year } = getPayrollMonthYear();
+        const fileName = `BangLuong_${data.fullName.replace(/\s+/g, '')}_${month}-${year}.pdf`;
         
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = generatePayrollHTML(data);
@@ -460,13 +472,14 @@ function debugEmail(employeeData) {
             throw new Error('Nhân viên chưa có email');
         }
 
+        const { month, year } = getPayrollMonthYear();
         // Gửi request tới backend
         fetch(`${BACKEND_URL}/api/send-email`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 to: employeeData.email,
-                subject: `Bảng lương tháng ${new Date().getMonth() + 1}/${new Date().getFullYear()} - ${employeeData.fullName}`,
+                subject: `Bảng lương tháng ${month}/${year} - ${employeeData.fullName}`,
                 html: generatePayrollHTML(employeeData)
             })
         })
@@ -528,10 +541,10 @@ function debugUpload(file) {
                 // Calculate for each employee
                 employeesData.forEach(emp => {
                     const effectiveSalary = emp.baseSalary * (emp.salaryPercentage / 100);
-                    emp.actualSalary = effectiveSalary * (emp.workDays / standardWorkDays);
-                    emp.totalIncome = emp.actualSalary + emp.overtime + emp.bonus + emp.mealAllowance + emp.responsibilityAllowance;
-                    emp.totalDeduction = emp.socialInsurance + emp.mealDeduction + emp.regulationDeduction + emp.incomeTax + emp.otherDeduction;
-                    emp.netSalary = emp.totalIncome - emp.totalDeduction;
+                    emp.actualSalary = Number((effectiveSalary * (emp.workDays / standardWorkDays)).toFixed(2));
+                    emp.totalIncome = Number((emp.actualSalary + emp.overtime + emp.bonus + emp.mealAllowance + emp.responsibilityAllowance).toFixed(2));
+                    emp.totalDeduction = Number((emp.socialInsurance + emp.mealDeduction + emp.regulationDeduction + emp.incomeTax + emp.otherDeduction).toFixed(2));
+                    emp.netSalary = Number((emp.totalIncome - emp.totalDeduction).toFixed(2));
                 });
                 
                 displayEmployeeTable(employeesData);
