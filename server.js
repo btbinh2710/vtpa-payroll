@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname)));
 // Tạo transporter với biến môi trường
 const createTransporter = () => {
     return nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'smtp.office365.com',
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.SMTP_PORT) || 587,
         secure: process.env.SMTP_SECURE === 'true',
         auth: {
@@ -99,7 +99,7 @@ app.post('/api/test-connection', async (req, res) => {
             success: true, 
             message: 'Kết nối SMTP thành công!',
             config: {
-                host: process.env.SMTP_HOST || 'smtp.office365.com',
+                host: process.env.SMTP_HOST || 'smtp.gmail.com',
                 port: process.env.SMTP_PORT || 587,
                 user: process.env.EMAIL_USER || 'hanhchinh2@vinfastphantrongtue.com'
             }
@@ -139,7 +139,7 @@ app.use('*', (req, res) => {
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`🚀 VTPA Payroll Backend running on port ${PORT}`);
-    console.log(`📧 SMTP Host: ${process.env.SMTP_HOST || 'smtp.office365.com'}`);
+    console.log(`📧 SMTP Host: ${process.env.SMTP_HOST || 'smtp.gmail.com'}`);
     console.log(`👤 Email User: ${process.env.EMAIL_USER || 'hanhchinh2@vinfastphantrongtue.com'}`);
     console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`🔗 Health check: http://localhost:${PORT}/health`);
