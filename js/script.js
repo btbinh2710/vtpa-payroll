@@ -850,6 +850,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
+        // Set default value for payrollMonth to current month/year
+        const payrollMonthInput = document.getElementById('payrollMonth');
+        if (payrollMonthInput && !payrollMonthInput.value) {
+            const now = new Date();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            payrollMonthInput.value = `${year}-${month}`;
+        }
+        
     } catch (error) {
         console.error('❌ Initialization error:', error);
         showError('Lỗi khởi tạo hệ thống: ' + error.message);
